@@ -1,0 +1,34 @@
+#-*-coding:utf-8-*-
+"""
+将每天中每十分钟中的WiFi接入数进行统计
+"""
+import os
+import csv
+import cPickle
+
+direction = "start/"
+file_list = os.listdir(direction)
+for file_name in file_list:
+    file_path = direction + file_name
+    f = open(file_path,'rb')
+    rows = csv.reader(f)
+    dictionary = {}
+    for row in rows:
+        row = row[0].split(' ')
+        sample = (row[0],row[2])
+        if(dictionary.has_key(sample)):
+            dictionary[sample] += int(row[1][1:-1])#"'19'" row[1][1:-1]就是19
+        else:
+            dictionary[sample] = int(row[1][1:-1])
+    f.close()
+
+    f = open("data/date/"+file_name.split('.')[0]+".pk1","wb")
+    cPickle.dump(dictionary,f,-1)
+    f.close()
+    # with open("data/date/"+file_name.split('.')[0]+'.csv', 'wb') as myFile:
+    #     myWriter = csv.writer(myFile)
+    #     for i in dictionary:
+    #         tmp = []
+    #         tmp.append(i)
+    #         myWriter.writerow(tmp)
+
